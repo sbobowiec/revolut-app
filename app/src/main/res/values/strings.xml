@@ -1,0 +1,5 @@
+<resources>
+  <string name="app_name">revolut-app</string>
+  <string name="title_fragment_rates">All Rates</string>
+  <string name="title_fragment_converter">Converter</string>
+</resources>

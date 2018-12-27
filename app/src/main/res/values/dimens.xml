@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <dimen name="margin_tiny">4dp</dimen>
+  <dimen name="margin_small">8dp</dimen>
+  <dimen name="margin_medium">12dp</dimen>
+  <dimen name="margin_normal">16dp</dimen>
+  <dimen name="margin_big">24dp</dimen>
+  <dimen name="margin_huge">32dp</dimen>
+  <dimen name="margin_huge_2x">64dp</dimen>
+
+  <dimen name="toolbar_height">56dp</dimen>
+  <dimen name="bottom_nav_height">56dp</dimen>
+
+  <dimen name="loading_item_margin">20dp</dimen>
+  <dimen name="loading_item_size">40dp</dimen>
+
+</resources>
