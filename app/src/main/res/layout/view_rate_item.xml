@@ -1,30 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingStart="5dp"
-    android:paddingEnd="5dp"
-    android:paddingTop="10dp"
-    android:paddingBottom="10dp"
-    android:clickable="true"
-    android:focusable="true"
-    android:foreground="?android:attr/selectableItemBackground">
+    android:padding="@dimen/margin_normal">
+
+  <ImageView
+      android:id="@+id/flag_icon"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignBottom="@id/currency_name"
+      android:layout_alignTop="@id/rate_symbol"
+      android:layout_marginEnd="@dimen/margin_medium"
+      android:contentDescription="@null"
+      tools:src="@drawable/icon_eur" />
 
   <TextView
       android:id="@+id/rate_symbol"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_alignParentStart="true"
+      android:layout_toEndOf="@id/flag_icon"
       tools:text="EUR"
-      />
+      android:textColor="@android:color/black"
+      android:textSize="@dimen/text_size_normal" />
+
+  <TextView
+      android:id="@+id/currency_name"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/rate_symbol"
+      android:layout_toEndOf="@id/flag_icon"
+      tools:text="Euro"
+      android:textColor="#919294"
+      android:textSize="@dimen/text_size_medium" />
 
   <TextView
       android:id="@+id/rate_value"
+      tools:text="1.00"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:layout_centerVertical="true"
       android:layout_alignParentEnd="true"
-      tools:text="4.35"
-      />
+      android:textColor="@android:color/black"
+      android:textSize="@dimen/text_size_normal" />
 
 </RelativeLayout>
