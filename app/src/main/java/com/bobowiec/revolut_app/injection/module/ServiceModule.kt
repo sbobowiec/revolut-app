@@ -1,7 +1,7 @@
 package com.bobowiec.revolut_app.injection.module
 
 import com.bobowiec.revolut_app.data.remote.RatesApi
-import com.bobowiec.revolut_app.data.repository.RatesRepository
+import com.bobowiec.revolut_app.data.local.RatesRepository
 import com.bobowiec.revolut_app.service.RatesService
 import com.bobowiec.revolut_app.service.RatesServiceImpl
 import com.bobowiec.revolut_app.util.scheduler.SchedulerProvider

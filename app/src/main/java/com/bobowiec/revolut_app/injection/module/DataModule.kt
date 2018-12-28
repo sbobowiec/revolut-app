@@ -1,7 +1,9 @@
 package com.bobowiec.revolut_app.injection.module
 
-import com.bobowiec.revolut_app.data.repository.RatesRepository
-import com.bobowiec.revolut_app.data.repository.RatesRepositoryImpl
+import android.content.Context
+import com.bobowiec.revolut_app.data.local.RatesRepository
+import com.bobowiec.revolut_app.data.local.RatesRepositoryImpl
+import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -11,6 +13,7 @@ class DataModule {
 
   @Provides
   @Singleton
-  fun provideRatesRepository(): RatesRepository = RatesRepositoryImpl()
+  fun provideRatesRepository(context: Context, gson: Gson): RatesRepository =
+      RatesRepositoryImpl(context = context, gson = gson)
 
 }

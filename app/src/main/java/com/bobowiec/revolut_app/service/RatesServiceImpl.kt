@@ -3,7 +3,7 @@ package com.bobowiec.revolut_app.service
 import android.util.Log
 import com.bobowiec.revolut_app.data.model.Rate
 import com.bobowiec.revolut_app.data.remote.RatesApi
-import com.bobowiec.revolut_app.data.repository.RatesRepository
+import com.bobowiec.revolut_app.data.local.RatesRepository
 import com.bobowiec.revolut_app.extensions.addTo
 import com.bobowiec.revolut_app.extensions.toList
 import com.bobowiec.revolut_app.util.scheduler.SchedulerProvider

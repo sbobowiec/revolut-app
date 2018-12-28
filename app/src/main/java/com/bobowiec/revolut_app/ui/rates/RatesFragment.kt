@@ -32,11 +32,6 @@ class RatesFragment : Fragment(), RatesView {
     presenter.bindView(this)
   }
 
-  override fun onDestroy() {
-    presenter.unbindView()
-    super.onDestroy()
-  }
-
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
     return inflater.inflate(R.layout.fragment_rates, container, false)
   }
@@ -49,6 +44,16 @@ class RatesFragment : Fragment(), RatesView {
   override fun onResume() {
     super.onResume()
     presenter.onInit()
+  }
+
+  override fun onStop() {
+    presenter.onStop()
+    super.onStop()
+  }
+
+  override fun onDestroy() {
+    presenter.unbindView()
+    super.onDestroy()
   }
 
   override fun isRatesRecyclerEmpty(): Boolean = rates.adapter.itemCount == 0
