@@ -3,6 +3,7 @@ package com.bobowiec.revolut_app.data.local
 import android.content.Context
 import android.content.SharedPreferences
 import com.bobowiec.revolut_app.data.model.Rate
+import com.bobowiec.revolut_app.data.remote.RatesApiConfig
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.util.ArrayList
@@ -28,6 +29,10 @@ class RatesRepositoryImpl(
       memoryCache = getRatesFromPrefs()
     }
     return memoryCache
+  }
+
+  override fun getSelectedBase(): String {
+    return getRates().takeIf { it.isNotEmpty() }?.first()?.symbol ?: RatesApiConfig.DEFAULT_BASE
   }
 
   override fun syncRates() {

@@ -6,6 +6,7 @@ import com.bobowiec.revolut_app.R
 import com.bobowiec.revolut_app.data.model.Currency
 import com.bobowiec.revolut_app.data.model.Rate
 import com.bobowiec.revolut_app.extensions.inflate
+import com.bobowiec.revolut_app.extensions.roundedValue
 
 import kotlinx.android.synthetic.main.view_rate_item.view.*
 
@@ -40,7 +41,7 @@ class RatesAdapter(
       currency_name.text = currency.fullName
 
       rate_symbol.text = rate.symbol
-      rate_value.text = rate.value.toString()
+      rate_value.text = rate.roundedValue()
       rate_value.isEnabled = false
 
       setOnClickListener { onRateClickListener(rate) }

@@ -17,6 +17,10 @@ class RatesPresenter @Inject constructor(
     private val networkStateObserver: NetworkStateObserver
 ) : BasePresenter<RatesView>() {
 
+  init {
+    RatesApiConfig.BASE_PARAM_VALUE = ratesRepository.getSelectedBase()
+  }
+
   fun onInit() {
     checkLocalData()
 
@@ -39,6 +43,7 @@ class RatesPresenter @Inject constructor(
 
   fun onRateClicked(rate: Rate) {
     RatesApiConfig.BASE_PARAM_VALUE = rate.symbol
+    view?.scrollToTop()
   }
 
   private fun bindRatesService() {

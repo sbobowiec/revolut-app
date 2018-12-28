@@ -5,6 +5,7 @@ import com.bobowiec.revolut_app.ui.base.MvpView
 
 interface RatesView : MvpView {
 
+  fun scrollToTop()
   fun isRatesRecyclerEmpty(): Boolean
   fun showData(data: List<Rate>)
   fun showErrorView(message: String)

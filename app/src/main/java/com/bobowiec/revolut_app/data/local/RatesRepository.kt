@@ -8,6 +8,8 @@ interface RatesRepository {
 
   fun getRates(): List<Rate>
 
+  fun getSelectedBase(): String
+
   fun syncRates()
 
 }

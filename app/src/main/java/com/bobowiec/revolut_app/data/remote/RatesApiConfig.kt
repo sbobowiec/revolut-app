@@ -6,7 +6,7 @@ object RatesApiConfig {
 
   const val BASE_PARAM_NAME = "base"
 
-  private const val DEFAULT_BASE = "EUR"
+  const val DEFAULT_BASE = "EUR"
   var BASE_PARAM_VALUE = DEFAULT_BASE
 
 }

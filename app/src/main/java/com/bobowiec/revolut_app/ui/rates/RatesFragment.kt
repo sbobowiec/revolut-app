@@ -56,6 +56,10 @@ class RatesFragment : Fragment(), RatesView {
     super.onDestroy()
   }
 
+  override fun scrollToTop() {
+    rates.smoothScrollToPosition(0)
+  }
+
   override fun isRatesRecyclerEmpty(): Boolean = rates.adapter.itemCount == 0
 
   override fun showData(data: List<Rate>) {
