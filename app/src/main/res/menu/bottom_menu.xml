@@ -2,10 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
   <item
       android:id="@+id/menu_item_rates"
-      android:icon="@null"
+      android:icon="@drawable/menu_icon_rates"
       android:title="@string/title_fragment_rates"/>
   <item
       android:id="@+id/menu_converter"
-      android:icon="@null"
+      android:icon="@drawable/menu_icon_converter"
       android:title="@string/title_fragment_converter"/>
 </menu>

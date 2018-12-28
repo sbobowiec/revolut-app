@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -10,4 +11,13 @@
       android:scrollbars="vertical"
       />
 
-</LinearLayout>
+  <ProgressBar
+      android:id="@+id/loading_indicator"
+      android:layout_width="@dimen/loading_item_size"
+      android:layout_height="@dimen/loading_item_size"
+      android:layout_centerInParent="true"
+      android:visibility="gone" />
+
+  <include layout="@layout/view_error" />
+
+</RelativeLayout>

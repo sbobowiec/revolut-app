@@ -9,10 +9,11 @@
   <dimen name="margin_huge">32dp</dimen>
   <dimen name="margin_huge_2x">64dp</dimen>
 
-  <dimen name="toolbar_height">56dp</dimen>
   <dimen name="bottom_nav_height">56dp</dimen>
 
   <dimen name="loading_item_margin">20dp</dimen>
   <dimen name="loading_item_size">40dp</dimen>
+
+  <dimen name="error_message_text_size">24sp</dimen>
 
 </resources>

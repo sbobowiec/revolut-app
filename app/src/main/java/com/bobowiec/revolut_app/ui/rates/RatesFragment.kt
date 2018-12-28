@@ -7,24 +7,26 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.bobowiec.revolut_app.R
+import com.bobowiec.revolut_app.data.model.Rate
 import com.bobowiec.revolut_app.extensions.getAppComponent
-import com.bobowiec.revolut_app.ui.base.BaseFragment
-import com.bobowiec.revolut_app.ui.rates.adapter.RateItem
-import com.bobowiec.revolut_app.ui.rates.adapter.RateItemsAdapter
+import com.bobowiec.revolut_app.extensions.hide
+import com.bobowiec.revolut_app.extensions.show
+import com.bobowiec.revolut_app.ui.rates.adapter.RatesAdapter
 import javax.inject.Inject
 
 import kotlinx.android.synthetic.main.fragment_rates.*
+import android.support.design.widget.CoordinatorLayout
+import android.support.design.widget.Snackbar
+import android.support.v4.app.Fragment
+import com.bobowiec.revolut_app.extensions.showSnackbar
+import kotlinx.android.synthetic.main.view_error.*
 
-class RatesFragment : BaseFragment(), RatesView {
+class RatesFragment : Fragment(), RatesView {
 
   @Inject
   lateinit var presenter: RatesPresenter
 
-  private val rateItemsAdapter = RateItemsAdapter()
-
-  override fun getTitle() = R.string.title_fragment_rates
-
-  override fun getFragmentTag() = TAG
+  private val ratesAdapter = RatesAdapter()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -51,15 +53,40 @@ class RatesFragment : BaseFragment(), RatesView {
     presenter.onInit()
   }
 
-  override fun isRatesRecyclerEmpty() = rateItemsAdapter.itemCount == 0
+  override fun isRatesRecyclerEmpty(): Boolean = ratesAdapter.itemCount == 0
 
-  override fun addRates(rates: List<RateItem>) {
-    rateItemsAdapter.addItems(rates)
+  override fun showData(rates: List<Rate>) {
+    ratesAdapter.addRates(rates)
+  }
+
+  override fun showErrorView(message: String) {
+    error_message.text = message
+    error_view.show()
+  }
+
+  override fun hideErrorView() {
+    error_view.hide()
+  }
+
+  override fun showOfflineSnackBar() {
+    val snackBarLayout = activity?.findViewById(R.id.snackbar_container) as CoordinatorLayout
+    snackBarLayout.showSnackbar(
+        getString(R.string.message_no_internet_connection),
+        Snackbar.LENGTH_LONG,
+        R.color.red)
+  }
+
+  override fun showLoadingIndicator() {
+    loading_indicator.show()
+  }
+
+  override fun hideLoadingIndicator() {
+    loading_indicator.hide()
   }
 
   private fun setupRecycler() {
     rates.apply {
-      adapter = rateItemsAdapter
+      adapter = ratesAdapter
 
       val divider = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
       addItemDecoration(divider)
@@ -72,7 +99,7 @@ class RatesFragment : BaseFragment(), RatesView {
 
   companion object {
 
-    private const val TAG = "RatesFragment"
+    const val TAG = "RatesFragment"
 
     fun create() = RatesFragment()
 

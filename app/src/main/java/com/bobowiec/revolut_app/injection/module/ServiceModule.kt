@@ -4,6 +4,7 @@ import com.bobowiec.revolut_app.data.remote.RatesApi
 import com.bobowiec.revolut_app.data.repository.RatesRepository
 import com.bobowiec.revolut_app.service.RatesService
 import com.bobowiec.revolut_app.service.RatesServiceImpl
+import com.bobowiec.revolut_app.util.scheduler.SchedulerProvider
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -14,7 +15,11 @@ class ServiceModule {
   @Provides
   @Singleton
   fun provideRatesService(
-      api: RatesApi, repository: RatesRepository
-  ): RatesService = RatesServiceImpl(ratesApi = api, ratesRepository = repository)
+      api: RatesApi, repository: RatesRepository, schedulerProvider: SchedulerProvider
+  ): RatesService = RatesServiceImpl(
+      ratesApi = api,
+      ratesRepository = repository,
+      schedulerProvider = schedulerProvider
+  )
 
 }

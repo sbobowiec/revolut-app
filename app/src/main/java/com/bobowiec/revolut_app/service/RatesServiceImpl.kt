@@ -6,16 +6,17 @@ import com.bobowiec.revolut_app.data.remote.RatesApi
 import com.bobowiec.revolut_app.data.repository.RatesRepository
 import com.bobowiec.revolut_app.extensions.addTo
 import com.bobowiec.revolut_app.extensions.toList
+import com.bobowiec.revolut_app.util.scheduler.SchedulerProvider
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
 
 class RatesServiceImpl(
     private val ratesApi: RatesApi,
     private val ratesRepository: RatesRepository,
+    private val schedulerProvider: SchedulerProvider,
     private val ratesSubject: PublishSubject<List<Rate>> = PublishSubject.create(),
     private var timerDisposable: Disposable? = null,
     private val requestDisposables: CompositeDisposable = CompositeDisposable()
@@ -27,7 +28,6 @@ class RatesServiceImpl(
   }
 
   override fun unbind() {
-    ratesSubject.onComplete()
     requestDisposables.clear()
     timerDisposable?.dispose()
   }
@@ -42,8 +42,8 @@ class RatesServiceImpl(
     ratesApi.getLatestRates().map {
       it.toList()
     }
-    .subscribeOn(Schedulers.io())
-    .observeOn(Schedulers.computation())
+    .subscribeOn(schedulerProvider.ioScheduler())
+    .observeOn(schedulerProvider.computationScheduler())
     .subscribe(
       { rates ->
         ratesRepository.saveRates(rates)

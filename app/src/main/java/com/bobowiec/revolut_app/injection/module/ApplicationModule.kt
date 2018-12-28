@@ -1,8 +1,8 @@
 package com.bobowiec.revolut_app.injection.module
 
 import android.content.Context
-import com.bobowiec.revolut_app.util.AppSchedulerProvider
-import com.bobowiec.revolut_app.util.SchedulerProvider
+import com.bobowiec.revolut_app.util.scheduler.AppSchedulerProvider
+import com.bobowiec.revolut_app.util.scheduler.SchedulerProvider
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton

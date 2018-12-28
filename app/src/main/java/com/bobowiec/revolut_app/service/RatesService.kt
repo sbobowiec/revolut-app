@@ -6,7 +6,6 @@ import io.reactivex.Observable
 interface RatesService {
 
   fun bind(): Observable<List<Rate>>
-
   fun unbind()
 
 }

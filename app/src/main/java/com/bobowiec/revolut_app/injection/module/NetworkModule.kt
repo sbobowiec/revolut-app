@@ -2,6 +2,8 @@ package com.bobowiec.revolut_app.injection.module
 
 import com.bobowiec.revolut_app.BuildConfig
 import com.bobowiec.revolut_app.data.remote.RatesApi
+import com.bobowiec.revolut_app.util.network.NetworkStateObserver
+import com.bobowiec.revolut_app.util.network.RxNetworkStateObserver
 import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
@@ -35,5 +37,9 @@ class NetworkModule {
   @Provides
   @Singleton
   fun provideRatesApi(retrofit: Retrofit): RatesApi = retrofit.create(RatesApi::class.java)
+
+  @Provides
+  @Singleton
+  fun provideNetworkStateObserver(): NetworkStateObserver = RxNetworkStateObserver()
 
 }
