@@ -1,3 +1,0 @@
-ext {
-  API_BASE_URL = "https://revolut.duckdns.org"
-}

@@ -1,7 +1,7 @@
 package com.bobowiec.revolut_app.injection.module
 
-import com.bobowiec.revolut_app.BuildConfig
 import com.bobowiec.revolut_app.data.remote.RatesApi
+import com.bobowiec.revolut_app.data.remote.RatesApiConfig
 import com.bobowiec.revolut_app.util.network.NetworkStateObserver
 import com.bobowiec.revolut_app.util.network.RxNetworkStateObserver
 import com.google.gson.Gson
@@ -29,7 +29,7 @@ class NetworkModule {
   fun provideRetrofit(gson: Gson, okHttpClient: OkHttpClient) : Retrofit =
       Retrofit.Builder()
           .client(okHttpClient)
-          .baseUrl(BuildConfig.API_BASE_URL)
+          .baseUrl(RatesApiConfig.API_BASE_URL)
           .addConverterFactory(GsonConverterFactory.create(gson))
           .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
           .build()

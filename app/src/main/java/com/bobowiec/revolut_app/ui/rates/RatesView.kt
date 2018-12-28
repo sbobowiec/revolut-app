@@ -6,7 +6,7 @@ import com.bobowiec.revolut_app.ui.base.MvpView
 interface RatesView : MvpView {
 
   fun isRatesRecyclerEmpty(): Boolean
-  fun showData(rates: List<Rate>)
+  fun showData(data: List<Rate>)
   fun showErrorView(message: String)
   fun hideErrorView()
   fun showOfflineSnackBar()

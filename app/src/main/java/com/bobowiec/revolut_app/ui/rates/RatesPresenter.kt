@@ -1,6 +1,7 @@
 package com.bobowiec.revolut_app.ui.rates
 
 import com.bobowiec.revolut_app.data.model.Rate
+import com.bobowiec.revolut_app.data.remote.RatesApiConfig
 import com.bobowiec.revolut_app.data.repository.RatesRepository
 import com.bobowiec.revolut_app.extensions.addTo
 import com.bobowiec.revolut_app.service.RatesService
@@ -29,6 +30,10 @@ class RatesPresenter @Inject constructor(
             onInternetConnectionLost()
           }
         }.addTo(disposables)
+  }
+
+  fun onRateClicked(rate: Rate) {
+    RatesApiConfig.BASE_PARAM_VALUE = rate.symbol
   }
 
   override fun unbindView() {

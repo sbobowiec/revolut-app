@@ -26,8 +26,6 @@ class RatesFragment : Fragment(), RatesView {
   @Inject
   lateinit var presenter: RatesPresenter
 
-  private val ratesAdapter = RatesAdapter()
-
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     context?.getAppComponent()?.inject(this)
@@ -53,10 +51,10 @@ class RatesFragment : Fragment(), RatesView {
     presenter.onInit()
   }
 
-  override fun isRatesRecyclerEmpty(): Boolean = ratesAdapter.itemCount == 0
+  override fun isRatesRecyclerEmpty(): Boolean = rates.adapter.itemCount == 0
 
-  override fun showData(rates: List<Rate>) {
-    ratesAdapter.addRates(rates)
+  override fun showData(data: List<Rate>) {
+    (rates.adapter as RatesAdapter).addRates(data)
   }
 
   override fun showErrorView(message: String) {
@@ -86,7 +84,7 @@ class RatesFragment : Fragment(), RatesView {
 
   private fun setupRecycler() {
     rates.apply {
-      adapter = ratesAdapter
+      adapter = RatesAdapter(presenter::onRateClicked)
 
       val divider = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
       addItemDecoration(divider)

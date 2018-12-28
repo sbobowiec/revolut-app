@@ -8,7 +8,11 @@ import com.bobowiec.revolut_app.extensions.inflate
 
 import kotlinx.android.synthetic.main.view_rate_item.view.*
 
-class RatesAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+typealias OnRateClickListener = (Rate) -> Unit
+
+class RatesAdapter(
+    private val onRateClickListener: OnRateClickListener
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
   private var items: List<Rate> = ArrayList()
 
@@ -29,9 +33,10 @@ class RatesAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
   inner class ViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
       parent.inflate(R.layout.view_rate_item)) {
 
-    fun bind(item: Rate) = with(itemView) {
-      rate_symbol.text = item.symbol
-      rate_value.text = item.value.toString()
+    fun bind(rate: Rate) = with(itemView) {
+      rate_symbol.text = rate.symbol
+      rate_value.text = rate.value.toString()
+      setOnClickListener { onRateClickListener(rate) }
     }
 
   }
