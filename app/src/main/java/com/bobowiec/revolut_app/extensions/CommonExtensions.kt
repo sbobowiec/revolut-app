@@ -22,9 +22,3 @@ fun Rate.roundedValue(decimalPlaces: Int): String {
       .setScale(decimalPlaces, BigDecimal.ROUND_HALF_UP)
       .toString()
 }
-
-fun Rate.convert(factor: Double) {
-  value = BigDecimal(value * factor)
-      .setScale(Rate.EXCHANGE_RATE_DECIMAL_PLACES, BigDecimal.ROUND_HALF_UP)
-      .toDouble()
-}

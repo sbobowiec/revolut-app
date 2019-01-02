@@ -18,11 +18,10 @@ import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import com.bobowiec.revolut_app.extensions.showSnackbar
-import com.bobowiec.revolut_app.ui.converter.adapter.ConvertibleRatesAdapter
+import com.bobowiec.revolut_app.ui.rates.adapter.RatesAdapter
 import kotlinx.android.synthetic.main.view_error.*
 
 class RatesFragment : Fragment(), RatesView {
-
   @Inject
   lateinit var presenter: RatesPresenter
 
@@ -39,15 +38,16 @@ class RatesFragment : Fragment(), RatesView {
   override fun onActivityCreated(savedInstanceState: Bundle?) {
     super.onActivityCreated(savedInstanceState)
     setupRecycler()
+    presenter.init()
   }
 
   override fun onResume() {
     super.onResume()
-    presenter.onInit()
+    presenter.resume()
   }
 
   override fun onStop() {
-    presenter.onStop()
+    presenter.stop()
     super.onStop()
   }
 
@@ -62,8 +62,10 @@ class RatesFragment : Fragment(), RatesView {
 
   override fun isRatesRecyclerEmpty(): Boolean = rates.adapter.itemCount == 0
 
+  override fun getRates(): List<Rate> = (rates.adapter as RatesAdapter).items
+
   override fun showData(data: List<Rate>) {
-    (rates.adapter as ConvertibleRatesAdapter).refresh(data)
+    (rates.adapter as RatesAdapter).refresh(data)
   }
 
   override fun showErrorView(message: String) {
@@ -93,7 +95,8 @@ class RatesFragment : Fragment(), RatesView {
 
   private fun setupRecycler() {
     rates.apply {
-      adapter = ConvertibleRatesAdapter(presenter::onRateClicked)
+      adapter = RatesAdapter(
+          presenter::onRateClicked)
 
       val divider = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
       addItemDecoration(divider)

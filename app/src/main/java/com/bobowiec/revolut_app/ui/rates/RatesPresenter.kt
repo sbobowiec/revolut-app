@@ -5,9 +5,9 @@ import com.bobowiec.revolut_app.data.remote.RatesApiConfig
 import com.bobowiec.revolut_app.data.local.RatesRepository
 import com.bobowiec.revolut_app.extensions.addTo
 import com.bobowiec.revolut_app.service.RatesService
-import com.bobowiec.revolut_app.ui.base.BasePresenter
 import com.bobowiec.revolut_app.util.scheduler.SchedulerProvider
 import com.bobowiec.revolut_app.util.network.NetworkStateObserver
+import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 
 class RatesPresenter @Inject constructor(
@@ -15,23 +15,37 @@ class RatesPresenter @Inject constructor(
     private val ratesService: RatesService,
     private val schedulerProvider: SchedulerProvider,
     private val networkStateObserver: NetworkStateObserver
-) : BasePresenter<RatesView>() {
+) {
 
-  private var rates: List<Rate> = listOf()
+  private var view: RatesView? = null
+  private var disposables: CompositeDisposable = CompositeDisposable()
+  private var fetchedRates: List<Rate> = listOf()
 
   init {
     RatesApiConfig.BASE_PARAM_VALUE = ratesRepository.findAll()
         .takeIf { it.isNotEmpty() }?.first()?.symbol ?: RatesApiConfig.DEFAULT_BASE
   }
 
-  fun onInit() {
+  fun bindView(view: RatesView) {
+    this.view = view
+  }
+
+  fun unbindView() {
+    this.view = null
+  }
+
+  fun init() {
     loadLocalDataIfAvailable()
+  }
+
+  fun resume() {
     startUpdatingRates()
   }
 
-  fun onStop() {
-    ratesRepository.save(rates)
+  fun stop() {
+    ratesRepository.save(view?.getRates() ?: listOf())
     unbindRatesService()
+    disposables.clear()
   }
 
   fun onRateClicked(rate: Rate) {
@@ -77,7 +91,7 @@ class RatesPresenter @Inject constructor(
   }
 
   private fun handleData(rates: List<Rate>) {
-    this.rates = rates
+    this.fetchedRates = rates
     view?.hideErrorView()
     view?.hideLoadingIndicator()
     view?.showData(rates)

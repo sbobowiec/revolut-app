@@ -7,36 +7,30 @@
     android:layout_height="match_parent"
     tools:context=".ui.MainActivity">
 
+  <android.support.design.widget.AppBarLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:title="@string/toolbar_title"
+        app:layout_scrollFlags="enterAlways"/>
+
+  </android.support.design.widget.AppBarLayout>
+
   <FrameLayout
       android:id="@+id/container"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:layout_marginBottom="@dimen/bottom_nav_height"
       app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
-  <LinearLayout
+  <android.support.design.widget.CoordinatorLayout
+      android:id="@+id/snackbar_container"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_gravity="bottom"
-      android:orientation="vertical"
-      >
-
-    <android.support.design.widget.CoordinatorLayout
-        android:id="@+id/snackbar_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <android.support.design.widget.BottomNavigationView
-        android:id="@+id/bottom_navigation"
-        style="@style/BottomMenu"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/bottom_nav_height"
-        app:itemIconTint="@drawable/selector_menu_item"
-        app:itemTextColor="@drawable/selector_menu_item"
-        app:layout_scrollFlags="scroll|enterAlways"
-        app:menu="@menu/bottom_menu"
-        />
-
-  </LinearLayout>
+      android:layout_gravity="bottom" />
 
 </android.support.design.widget.CoordinatorLayout>

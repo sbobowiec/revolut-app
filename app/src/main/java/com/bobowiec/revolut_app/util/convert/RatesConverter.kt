@@ -17,24 +17,31 @@ class RatesConverter(
 
   fun convert(rates: List<Rate>) {
     if (baseRateChanged(rates)) {
-      baseRateSymbol = rates[0].symbol
-      baseRateValue = getBaseRatePreviousValue()
-      rates[0].value = baseRateValue
-      rates.subList(1, rates.size).map { it.value *= baseRateValue }
-
-      refreshRatesListener.refreshAll()
+      convertForNewBaseRate(rates)
     } else {
-      rates.first().value = baseRateValue
-      rates.subList(1, rates.size).map { it.value *= baseRateValue }
-
-      refreshRatesListener.refreshExchangeRates()
+      convertForPreviousBaseRate(rates)
     }
-
     previousRates = rates
   }
 
   private fun baseRateChanged(rates: List<Rate>): Boolean =
       rates.isNotEmpty() && rates[0].symbol != baseRateSymbol
+
+  private fun convertForNewBaseRate(rates: List<Rate>) {
+    baseRateSymbol = rates[0].symbol
+    baseRateValue = getBaseRatePreviousValue()
+    rates[0].value = baseRateValue
+    rates.subList(1, rates.size).map { it.value *= baseRateValue }
+
+    refreshRatesListener.refreshAll()
+  }
+
+  private fun convertForPreviousBaseRate(rates: List<Rate>) {
+    rates.first().value = baseRateValue
+    rates.subList(1, rates.size).map { it.value *= baseRateValue }
+
+    refreshRatesListener.refreshExchangeRates()
+  }
 
   private fun getBaseRatePreviousValue() = previousRates.firstOrNull {
     it.symbol == baseRateSymbol
