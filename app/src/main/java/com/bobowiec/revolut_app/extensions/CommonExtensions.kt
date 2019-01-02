@@ -11,14 +11,13 @@ fun Context.getAppComponent(): ApplicationComponent = (this.applicationContext a
 
 fun CurrentRates.toList(): List<Rate> {
   val rates = ArrayList<Rate>()
-  rates.add(Rate(this.base, 1.00))
+  rates.add(Rate(this.base, Rate.BASE_RATE_DEFAULT_VALUE))
   rates.addAll(this.rates.map { Rate(it.key, it.value) })
 
   return rates
 }
 
-fun Rate.roundedValue(decimalPlaces: Int): String {
-  return BigDecimal(value)
-      .setScale(decimalPlaces, BigDecimal.ROUND_HALF_UP)
-      .toString()
+fun Rate.multiply(multiplier: BigDecimal) {
+  value = value.multiply(multiplier)
+      .setScale(Rate.EXCHANGE_RATE_DECIMAL_PLACES, BigDecimal.ROUND_HALF_UP)
 }

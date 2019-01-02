@@ -12,12 +12,10 @@ import com.bobowiec.revolut_app.R
 import com.bobowiec.revolut_app.data.model.Currency
 import com.bobowiec.revolut_app.data.model.Rate
 import com.bobowiec.revolut_app.extensions.inflate
-import com.bobowiec.revolut_app.extensions.roundedValue
 import com.bobowiec.revolut_app.util.convert.RatesConverter
 import com.bobowiec.revolut_app.util.convert.RefreshRatesListener
 
 import kotlinx.android.synthetic.main.view_rate_item.view.*
-import java.math.BigDecimal
 
 typealias OnRateClickListener = (Rate) -> Unit
 
@@ -28,7 +26,7 @@ class RatesAdapter(
   var items: List<Rate> = ArrayList()
 
   private val ratesConverter = RatesConverter(object: RefreshRatesListener {
-    override fun refreshAll() {
+    override fun refreshAllRates() {
       notifyDataSetChanged()
     }
 
@@ -59,7 +57,7 @@ class RatesAdapter(
 
     fun bind(rate: Rate, isBase: Boolean) {
       bindCommonValues(rate)
-      if (isBase) bindBaseRate(rate) else bindExchangeRate(rate)
+      if (isBase) bindBaseRate() else bindExchangeRate()
     }
 
     private fun bindCommonValues(rate: Rate) = with(itemView) {
@@ -68,12 +66,12 @@ class RatesAdapter(
       flag_icon.setImageResource(currency.flagIconRes)
       currency_name.text = currency.fullName
       rate_symbol.text = rate.symbol
+      rate_value.setText(rate.value.toPlainString())
 
       setOnClickListener { onRateClickListener(rate) }
     }
 
-    private fun bindBaseRate(rate: Rate) = with(itemView) {
-      rate_value.setText(rate.roundedValue(Rate.BASE_RATE_DECIMAL_PLACES))
+    private fun bindBaseRate() = with(itemView) {
       rate_value.isEnabled = true
       rate_value.background.colorFilter = PorterDuffColorFilter(
           ContextCompat.getColor(context, R.color.colorAccent),
@@ -82,8 +80,7 @@ class RatesAdapter(
       rate_value.addTextChangedListener(rateInputValueChangedListener)
     }
 
-    private fun bindExchangeRate(rate: Rate) = with(itemView) {
-      rate_value.setText(rate.roundedValue(Rate.EXCHANGE_RATE_DECIMAL_PLACES))
+    private fun bindExchangeRate() = with(itemView) {
       rate_value.isEnabled = false
       rate_value.background.colorFilter = PorterDuffColorFilter(
           Color.BLACK,
@@ -100,10 +97,8 @@ class RatesAdapter(
 
     override fun onTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) {
       if (rateItemPosition != 0) return
-      ratesConverter.baseRateValue = text.toString().toDoubleOrNull() ?: 1.0
-      ratesConverter.baseRateValue = BigDecimal(ratesConverter.baseRateValue)
-          .setScale(2, BigDecimal.ROUND_HALF_UP)
-          .toDouble()
+      ratesConverter.baseRateValue = text.toString().toBigDecimalOrNull() ?: Rate.BASE_RATE_DEFAULT_VALUE
+      ratesConverter.baseRateValue.setScale(Rate.BASE_RATE_DECIMAL_PLACES)
     }
   }
 
