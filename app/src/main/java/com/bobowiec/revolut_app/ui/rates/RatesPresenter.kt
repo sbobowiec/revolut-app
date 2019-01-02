@@ -17,13 +17,35 @@ class RatesPresenter @Inject constructor(
     private val networkStateObserver: NetworkStateObserver
 ) : BasePresenter<RatesView>() {
 
+  private var rates: List<Rate> = listOf()
+
   init {
-    RatesApiConfig.BASE_PARAM_VALUE = ratesRepository.getSelectedBase()
+    RatesApiConfig.BASE_PARAM_VALUE = ratesRepository.findAll()
+        .takeIf { it.isNotEmpty() }?.first()?.symbol ?: RatesApiConfig.DEFAULT_BASE
   }
 
   fun onInit() {
-    checkLocalData()
+    loadLocalDataIfAvailable()
+    startUpdatingRates()
+  }
 
+  fun onStop() {
+    ratesRepository.save(rates)
+    unbindRatesService()
+  }
+
+  fun onRateClicked(rate: Rate) {
+    RatesApiConfig.BASE_PARAM_VALUE = rate.symbol
+    view?.scrollToTop()
+  }
+
+  private fun loadLocalDataIfAvailable() {
+    ratesRepository.findAll()
+        .takeIf { it.isNotEmpty() }
+        ?.let { handleData(it) }
+  }
+
+  private fun startUpdatingRates() {
     networkStateObserver.observeNetworkState()
         .subscribeOn(schedulerProvider.ioScheduler())
         .observeOn(schedulerProvider.uiScheduler())
@@ -34,16 +56,6 @@ class RatesPresenter @Inject constructor(
             onInternetConnectionLost()
           }
         }.addTo(disposables)
-  }
-
-  fun onStop() {
-    ratesRepository.syncRates()
-    unbindRatesService()
-  }
-
-  fun onRateClicked(rate: Rate) {
-    RatesApiConfig.BASE_PARAM_VALUE = rate.symbol
-    view?.scrollToTop()
   }
 
   private fun bindRatesService() {
@@ -64,13 +76,8 @@ class RatesPresenter @Inject constructor(
     handleOfflineError()
   }
 
-  private fun checkLocalData() {
-    ratesRepository.getRates()
-        .takeIf { it.isNotEmpty() }
-        ?.let { handleData(it) }
-  }
-
   private fun handleData(rates: List<Rate>) {
+    this.rates = rates
     view?.hideErrorView()
     view?.hideLoadingIndicator()
     view?.showData(rates)

@@ -3,4 +3,5 @@
   <string name="title_fragment_rates">All Rates</string>
   <string name="title_fragment_converter">Converter</string>
   <string name="message_no_internet_connection">No Internet connection</string>
+  <string name="message_empty_data">No data available</string>
 </resources>

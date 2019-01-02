@@ -5,21 +5,26 @@ import com.bobowiec.revolut_app.App
 import com.bobowiec.revolut_app.data.model.CurrentRates
 import com.bobowiec.revolut_app.data.model.Rate
 import com.bobowiec.revolut_app.injection.ApplicationComponent
-import java.math.RoundingMode
-import java.text.DecimalFormat
+import java.math.BigDecimal
 
 fun Context.getAppComponent(): ApplicationComponent = (this.applicationContext as App).component
 
 fun CurrentRates.toList(): List<Rate> {
   val rates = ArrayList<Rate>()
-  rates.add(Rate(this.base, 1.0F))
+  rates.add(Rate(this.base, 1.00))
   rates.addAll(this.rates.map { Rate(it.key, it.value) })
 
   return rates
 }
 
-private val ratesDecimalFormat = DecimalFormat("#.####")
-fun Rate.roundedValue(): String {
-  ratesDecimalFormat.roundingMode = RoundingMode.CEILING
-  return ratesDecimalFormat.format(value)
+fun Rate.roundedValue(decimalPlaces: Int): String {
+  return BigDecimal(value)
+      .setScale(decimalPlaces, BigDecimal.ROUND_HALF_UP)
+      .toString()
+}
+
+fun Rate.convert(factor: Double) {
+  value = BigDecimal(value * factor)
+      .setScale(Rate.EXCHANGE_RATE_DECIMAL_PLACES, BigDecimal.ROUND_HALF_UP)
+      .toDouble()
 }

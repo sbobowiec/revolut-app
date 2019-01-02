@@ -11,7 +11,6 @@ import com.bobowiec.revolut_app.data.model.Rate
 import com.bobowiec.revolut_app.extensions.getAppComponent
 import com.bobowiec.revolut_app.extensions.hide
 import com.bobowiec.revolut_app.extensions.show
-import com.bobowiec.revolut_app.ui.rates.adapter.RatesAdapter
 import javax.inject.Inject
 
 import kotlinx.android.synthetic.main.fragment_rates.*
@@ -19,6 +18,7 @@ import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import com.bobowiec.revolut_app.extensions.showSnackbar
+import com.bobowiec.revolut_app.ui.converter.adapter.ConvertibleRatesAdapter
 import kotlinx.android.synthetic.main.view_error.*
 
 class RatesFragment : Fragment(), RatesView {
@@ -63,7 +63,7 @@ class RatesFragment : Fragment(), RatesView {
   override fun isRatesRecyclerEmpty(): Boolean = rates.adapter.itemCount == 0
 
   override fun showData(data: List<Rate>) {
-    (rates.adapter as RatesAdapter).addRates(data)
+    (rates.adapter as ConvertibleRatesAdapter).refresh(data)
   }
 
   override fun showErrorView(message: String) {
@@ -93,7 +93,7 @@ class RatesFragment : Fragment(), RatesView {
 
   private fun setupRecycler() {
     rates.apply {
-      adapter = RatesAdapter(presenter::onRateClicked)
+      adapter = ConvertibleRatesAdapter(presenter::onRateClicked)
 
       val divider = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
       addItemDecoration(divider)

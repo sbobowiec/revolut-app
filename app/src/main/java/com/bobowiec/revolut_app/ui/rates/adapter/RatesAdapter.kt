@@ -7,10 +7,9 @@ import com.bobowiec.revolut_app.data.model.Currency
 import com.bobowiec.revolut_app.data.model.Rate
 import com.bobowiec.revolut_app.extensions.inflate
 import com.bobowiec.revolut_app.extensions.roundedValue
+import com.bobowiec.revolut_app.ui.common.OnRateClickListener
 
 import kotlinx.android.synthetic.main.view_rate_item.view.*
-
-typealias OnRateClickListener = (Rate) -> Unit
 
 class RatesAdapter(
     private val onRateClickListener: OnRateClickListener
@@ -22,7 +21,7 @@ class RatesAdapter(
 
   override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
     holder as ViewHolder
-    holder.bind(items[position])
+    holder.bind(items[position], position == 0)
   }
 
   override fun getItemCount() = items.count()
@@ -35,14 +34,15 @@ class RatesAdapter(
   inner class ViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
       parent.inflate(R.layout.view_rate_item)) {
 
-    fun bind(rate: Rate) = with(itemView) {
+    fun bind(rate: Rate, isBase: Boolean) = with(itemView) {
       val currency = Currency.valueOf(rate.symbol)
       flag_icon.setImageResource(currency.flagIconRes)
       currency_name.text = currency.fullName
 
       rate_symbol.text = rate.symbol
-      rate_value.text = rate.roundedValue()
-      rate_value.isEnabled = false
+      rate_value.text = rate.roundedValue(
+          if (isBase) Rate.BASE_RATE_DECIMAL_PLACES else Rate.EXCHANGE_RATE_DECIMAL_PLACES
+      )
 
       setOnClickListener { onRateClickListener(rate) }
     }
