@@ -15,16 +15,19 @@ import com.bobowiec.revolut_app.extensions.inflate
 
 import kotlinx.android.synthetic.main.view_rate_item.view.*
 import com.bobowiec.revolut_app.extensions.isBaseRate
-import com.bobowiec.revolut_app.util.convert.RatesConverter
 
 typealias OnRateClickListener = (Rate) -> Unit
 
 class RatesAdapter(
-    private val ratesConverter: RatesConverter = RatesConverter(),
+    private val presenter: RatesAdapterPresenter = RatesAdapterPresenter(),
     private val onRateClickListener: OnRateClickListener
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), RatesAdapterView {
 
-  var items: List<Rate> = ArrayList()
+  private var items: List<Rate> = ArrayList()
+
+  init {
+    presenter.bindView(this)
+  }
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(parent)
 
@@ -34,17 +37,26 @@ class RatesAdapter(
     holder.bind(items[position])
   }
 
+  override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+    presenter.unbindView()
+  }
+
   override fun getItemCount() = items.count()
 
   fun refresh(rates: List<Rate>) {
-    val baseRateChanged = ratesConverter.baseRateChanged(rates)
-    items = ratesConverter.convert(rates)
+    presenter.handleRatesRefresh(rates)
+  }
 
-    if (baseRateChanged) {
-      notifyDataSetChanged()
-    } else {
-      notifyItemRangeChanged(1, items.size - 1)
-    }
+  override fun setRates(rates: List<Rate>) {
+    items = rates
+  }
+
+  override fun refreshAllRates() {
+    notifyDataSetChanged()
+  }
+
+  override fun refreshExchangeRates() {
+    notifyItemRangeChanged(1, items.size - 1)
   }
 
   inner class ViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
@@ -93,9 +105,7 @@ class RatesAdapter(
 
     override fun onTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) {
       if (rateItemPosition != 0) return
-
-      val newBaseRate = text.toString().toBigDecimalOrNull() ?: Rate.BASE_RATE_DEFAULT_VALUE
-      ratesConverter.updateBaseRateValue(newBaseRate)
+      presenter.onRateInputValueChanged(text.toString())
     }
   }
 

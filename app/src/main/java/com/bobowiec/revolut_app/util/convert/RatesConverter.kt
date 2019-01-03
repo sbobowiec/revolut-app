@@ -5,9 +5,9 @@ import com.bobowiec.revolut_app.extensions.multiply
 import com.bobowiec.revolut_app.extensions.roundToBase
 import java.math.BigDecimal
 
-class RatesConverter(private var baseRate: Rate = Rate.BASE_RATE) {
-
-  private var previousRates: List<Rate> = ArrayList()
+class RatesConverter(
+    private var baseRate: Rate = Rate.BASE_RATE,
+    private var previousRates: List<Rate> = ArrayList()) {
 
   fun convert(rates: List<Rate>): List<Rate> {
     val result = if (baseRateChanged(rates)) {
