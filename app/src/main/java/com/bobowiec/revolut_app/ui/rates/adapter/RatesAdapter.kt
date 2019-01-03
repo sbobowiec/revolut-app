@@ -95,7 +95,7 @@ class RatesAdapter(
       if (rateItemPosition != 0) return
 
       val newBaseRate = text.toString().toBigDecimalOrNull() ?: Rate.BASE_RATE_DEFAULT_VALUE
-      ratesConverter.updateBaseRate(newBaseRate)
+      ratesConverter.updateBaseRateValue(newBaseRate)
     }
   }
 

@@ -22,5 +22,9 @@ fun Rate.isBaseRate() = symbol == RatesApiConfig.BASE_PARAM_VALUE
 
 fun Rate.multiply(multiplier: BigDecimal) {
   value = value.multiply(multiplier)
-      .setScale(Rate.RATE_VALUE_DECIMAL_PLACES, BigDecimal.ROUND_HALF_UP)
+      .setScale(Rate.EXCHANGE_RATE_VALUE_DECIMAL_PLACES, BigDecimal.ROUND_HALF_UP)
+}
+
+fun Rate.roundToBase(): BigDecimal {
+  return value.setScale(Rate.BASE_RATE_VALUE_DECIMAL_PLACES, BigDecimal.ROUND_HALF_UP)
 }
