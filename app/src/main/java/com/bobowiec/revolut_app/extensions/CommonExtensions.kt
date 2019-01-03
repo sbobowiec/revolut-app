@@ -4,6 +4,7 @@ import android.content.Context
 import com.bobowiec.revolut_app.App
 import com.bobowiec.revolut_app.data.model.CurrentRates
 import com.bobowiec.revolut_app.data.model.Rate
+import com.bobowiec.revolut_app.data.remote.RatesApiConfig
 import com.bobowiec.revolut_app.injection.ApplicationComponent
 import java.math.BigDecimal
 
@@ -17,7 +18,9 @@ fun CurrentRates.toList(): List<Rate> {
   return rates
 }
 
+fun Rate.isBaseRate() = symbol == RatesApiConfig.BASE_PARAM_VALUE
+
 fun Rate.multiply(multiplier: BigDecimal) {
   value = value.multiply(multiplier)
-      .setScale(Rate.EXCHANGE_RATE_DECIMAL_PLACES, BigDecimal.ROUND_HALF_UP)
+      .setScale(Rate.RATE_VALUE_DECIMAL_PLACES, BigDecimal.ROUND_HALF_UP)
 }

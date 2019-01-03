@@ -4,6 +4,7 @@ import com.bobowiec.revolut_app.data.model.Rate
 import com.bobowiec.revolut_app.data.remote.RatesApiConfig
 import com.bobowiec.revolut_app.data.local.RatesRepository
 import com.bobowiec.revolut_app.extensions.addTo
+import com.bobowiec.revolut_app.extensions.isBaseRate
 import com.bobowiec.revolut_app.service.RatesService
 import com.bobowiec.revolut_app.util.scheduler.SchedulerProvider
 import com.bobowiec.revolut_app.util.network.NetworkStateObserver
@@ -43,14 +44,25 @@ class RatesPresenter @Inject constructor(
   }
 
   fun stop() {
-    ratesRepository.save(view?.getRates() ?: listOf())
+    ratesRepository.save(fetchedRates)
     unbindRatesService()
     disposables.clear()
   }
 
   fun onRateClicked(rate: Rate) {
-    RatesApiConfig.BASE_PARAM_VALUE = rate.symbol
-    view?.scrollToTop()
+    if (rate.isBaseRate()) return
+
+    networkStateObserver.determineNetworkState()
+        .subscribeOn(schedulerProvider.ioScheduler())
+        .observeOn(schedulerProvider.uiScheduler())
+        .subscribe { isConnectedToInternet ->
+          if (isConnectedToInternet) {
+            RatesApiConfig.BASE_PARAM_VALUE = rate.symbol
+            view?.scrollToTop()
+          } else {
+            view?.showOfflineSnackBar()
+          }
+        }
   }
 
   private fun loadLocalDataIfAvailable() {
@@ -64,11 +76,8 @@ class RatesPresenter @Inject constructor(
         .subscribeOn(schedulerProvider.ioScheduler())
         .observeOn(schedulerProvider.uiScheduler())
         .subscribe { isConnectedToInternet ->
-          if (isConnectedToInternet) {
-            bindRatesService()
-          } else {
-            handleOfflineError()
-          }
+          bindRatesService()
+          if (!isConnectedToInternet) handleOfflineError()
         }.addTo(disposables)
   }
 
@@ -86,6 +95,7 @@ class RatesPresenter @Inject constructor(
   }
 
   private fun handleData(rates: List<Rate>) {
+    if (rates.isEmpty()) return
     this.fetchedRates = rates
     view?.hideErrorView()
     view?.hideLoadingIndicator()

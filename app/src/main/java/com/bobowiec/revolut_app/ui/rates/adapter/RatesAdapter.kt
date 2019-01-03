@@ -14,7 +14,7 @@ import com.bobowiec.revolut_app.data.model.Rate
 import com.bobowiec.revolut_app.extensions.inflate
 
 import kotlinx.android.synthetic.main.view_rate_item.view.*
-import com.bobowiec.revolut_app.data.remote.RatesApiConfig
+import com.bobowiec.revolut_app.extensions.isBaseRate
 import com.bobowiec.revolut_app.util.convert.RatesConverter
 
 typealias OnRateClickListener = (Rate) -> Unit
@@ -54,10 +54,8 @@ class RatesAdapter(
 
     fun bind(rate: Rate) {
       bindCommonValues(rate)
-      if (isBase(rate)) bindBaseRate() else bindExchangeRate()
+      if (rate.isBaseRate()) bindBaseRate() else bindExchangeRate()
     }
-
-    private fun isBase(rate: Rate) = RatesApiConfig.BASE_PARAM_VALUE == rate.symbol
 
     private fun bindCommonValues(rate: Rate) = with(itemView) {
       val currency = Currency.valueOf(rate.symbol)

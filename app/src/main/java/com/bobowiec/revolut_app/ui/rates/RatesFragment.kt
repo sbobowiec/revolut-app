@@ -63,8 +63,6 @@ class RatesFragment : Fragment(), RatesView {
 
   override fun isRatesRecyclerEmpty(): Boolean = rates.adapter.itemCount == 0
 
-  override fun getRates(): List<Rate> = (rates.adapter as RatesAdapter).items
-
   override fun showData(data: List<Rate>) {
     (rates.adapter as RatesAdapter).refresh(data)
   }

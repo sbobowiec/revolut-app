@@ -6,7 +6,6 @@ interface RatesView {
 
   fun scrollToTop()
   fun isRatesRecyclerEmpty(): Boolean
-  fun getRates(): List<Rate>
   fun showData(data: List<Rate>)
   fun showErrorView(message: String)
   fun hideErrorView()

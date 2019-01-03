@@ -24,7 +24,7 @@ class RatesConverter(
 
   fun updateBaseRate(newBaseRateValue: BigDecimal) {
     baseRateValue = newBaseRateValue.setScale(
-        Rate.BASE_RATE_DECIMAL_PLACES,
+        Rate.RATE_VALUE_DECIMAL_PLACES,
         BigDecimal.ROUND_HALF_UP
     )
   }
@@ -49,7 +49,7 @@ class RatesConverter(
     result.first().value = baseRateValue
     result.subList(1, result.size).map { it.multiply(baseRateValue) }
 
-    return result
+    return result.toList()
   }
 
   private fun copyRates(rates: List<Rate>): List<Rate> {
