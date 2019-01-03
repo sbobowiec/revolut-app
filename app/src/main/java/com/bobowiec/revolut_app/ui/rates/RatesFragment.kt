@@ -22,6 +22,7 @@ import com.bobowiec.revolut_app.ui.rates.adapter.RatesAdapter
 import kotlinx.android.synthetic.main.view_error.*
 
 class RatesFragment : Fragment(), RatesView {
+
   @Inject
   lateinit var presenter: RatesPresenter
 
@@ -95,8 +96,7 @@ class RatesFragment : Fragment(), RatesView {
 
   private fun setupRecycler() {
     rates.apply {
-      adapter = RatesAdapter(
-          presenter::onRateClicked)
+      adapter = RatesAdapter(onRateClickListener = presenter::onRateClicked)
 
       val divider = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
       addItemDecoration(divider)

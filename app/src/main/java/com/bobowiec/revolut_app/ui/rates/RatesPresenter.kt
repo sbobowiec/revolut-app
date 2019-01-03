@@ -67,7 +67,7 @@ class RatesPresenter @Inject constructor(
           if (isConnectedToInternet) {
             bindRatesService()
           } else {
-            onInternetConnectionLost()
+            handleOfflineError()
           }
         }.addTo(disposables)
   }
@@ -83,11 +83,6 @@ class RatesPresenter @Inject constructor(
 
   private fun unbindRatesService() {
     ratesService.unbind()
-  }
-
-  private fun onInternetConnectionLost() {
-    unbindRatesService()
-    handleOfflineError()
   }
 
   private fun handleData(rates: List<Rate>) {

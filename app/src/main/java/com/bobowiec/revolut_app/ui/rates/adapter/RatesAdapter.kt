@@ -12,42 +12,39 @@ import com.bobowiec.revolut_app.R
 import com.bobowiec.revolut_app.data.model.Currency
 import com.bobowiec.revolut_app.data.model.Rate
 import com.bobowiec.revolut_app.extensions.inflate
-import com.bobowiec.revolut_app.util.convert.RatesConverter
-import com.bobowiec.revolut_app.util.convert.RefreshRatesListener
 
 import kotlinx.android.synthetic.main.view_rate_item.view.*
+import com.bobowiec.revolut_app.data.remote.RatesApiConfig
+import com.bobowiec.revolut_app.util.convert.RatesConverter
 
 typealias OnRateClickListener = (Rate) -> Unit
 
 class RatesAdapter(
+    private val ratesConverter: RatesConverter = RatesConverter(),
     private val onRateClickListener: OnRateClickListener
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
   var items: List<Rate> = ArrayList()
-
-  private val ratesConverter = RatesConverter(object: RefreshRatesListener {
-    override fun refreshAllRates() {
-      notifyDataSetChanged()
-    }
-
-    override fun refreshExchangeRates() {
-      notifyItemRangeChanged(1, itemCount - 1)
-    }
-  })
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(parent)
 
   override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
     holder as ViewHolder
     holder.rateInputValueChangedListener.rateItemPosition = position
-    holder.bind(items[position], position == 0)
+    holder.bind(items[position])
   }
 
   override fun getItemCount() = items.count()
 
   fun refresh(rates: List<Rate>) {
-    items = rates
-    ratesConverter.convert(items)
+    val baseRateChanged = ratesConverter.baseRateChanged(rates)
+    items = ratesConverter.convert(rates)
+
+    if (baseRateChanged) {
+      notifyDataSetChanged()
+    } else {
+      notifyItemRangeChanged(1, items.size - 1)
+    }
   }
 
   inner class ViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
@@ -55,10 +52,12 @@ class RatesAdapter(
 
     val rateInputValueChangedListener = RateInputValueChangedListener()
 
-    fun bind(rate: Rate, isBase: Boolean) {
+    fun bind(rate: Rate) {
       bindCommonValues(rate)
-      if (isBase) bindBaseRate() else bindExchangeRate()
+      if (isBase(rate)) bindBaseRate() else bindExchangeRate()
     }
+
+    private fun isBase(rate: Rate) = RatesApiConfig.BASE_PARAM_VALUE == rate.symbol
 
     private fun bindCommonValues(rate: Rate) = with(itemView) {
       val currency = Currency.valueOf(rate.symbol)
@@ -87,7 +86,6 @@ class RatesAdapter(
           PorterDuff.Mode.SRC_IN
       )
     }
-
   }
 
   inner class RateInputValueChangedListener(var rateItemPosition: Int = 0) : TextWatcher {
@@ -97,8 +95,9 @@ class RatesAdapter(
 
     override fun onTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) {
       if (rateItemPosition != 0) return
-      ratesConverter.baseRateValue = text.toString().toBigDecimalOrNull() ?: Rate.BASE_RATE_DEFAULT_VALUE
-      ratesConverter.baseRateValue.setScale(Rate.BASE_RATE_DECIMAL_PLACES)
+
+      val newBaseRate = text.toString().toBigDecimalOrNull() ?: Rate.BASE_RATE_DEFAULT_VALUE
+      ratesConverter.updateBaseRate(newBaseRate)
     }
   }
 

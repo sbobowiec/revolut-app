@@ -1,5 +1,6 @@
 package com.bobowiec.revolut_app.injection.module
 
+import com.bobowiec.revolut_app.data.local.RatesRepository
 import com.bobowiec.revolut_app.data.remote.RatesApi
 import com.bobowiec.revolut_app.service.RatesService
 import com.bobowiec.revolut_app.service.RatesServiceImpl
@@ -13,7 +14,14 @@ class ServiceModule {
 
   @Provides
   @Singleton
-  fun provideRatesService(api: RatesApi, schedulerProvider: SchedulerProvider): RatesService =
-      RatesServiceImpl(ratesApi = api, schedulerProvider = schedulerProvider)
+  fun provideRatesService(
+      api: RatesApi,
+      repository: RatesRepository,
+      schedulerProvider: SchedulerProvider
+  ): RatesService = RatesServiceImpl(
+      ratesApi = api,
+      ratesRepository = repository,
+      schedulerProvider = schedulerProvider
+  )
 
 }

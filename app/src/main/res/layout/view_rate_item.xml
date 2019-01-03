@@ -4,8 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/rate_item_view_height"
-    android:clickable="true"
-    android:focusable="true"
     android:padding="@dimen/margin_normal">
 
   <ImageView

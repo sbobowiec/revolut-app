@@ -5,44 +5,57 @@ import com.bobowiec.revolut_app.data.model.Rate
 import com.bobowiec.revolut_app.extensions.multiply
 import java.math.BigDecimal
 
-interface RefreshRatesListener {
-  fun refreshAllRates()
-  fun refreshExchangeRates()
-}
-
 class RatesConverter(
-    private val refreshRatesListener: RefreshRatesListener,
-    var baseRateValue: BigDecimal = Rate.BASE_RATE_DEFAULT_VALUE,
-    var baseRateSymbol: String = Currency.EUR.symbol) {
+    private var baseRateValue: BigDecimal = Rate.BASE_RATE_DEFAULT_VALUE,
+    private var baseRateSymbol: String = Currency.EUR.symbol) {
 
   private var previousRates: List<Rate> = ArrayList()
 
-  fun convert(rates: List<Rate>) {
-    if (baseRateChanged(rates)) {
+  fun convert(rates: List<Rate>): List<Rate> {
+    val result = if (baseRateChanged(rates)) {
       convertForNewBaseRate(rates)
     } else {
       convertForPreviousBaseRate(rates)
     }
-    previousRates = rates
+    previousRates = result
+
+    return result
   }
 
-  private fun baseRateChanged(rates: List<Rate>): Boolean =
+  fun updateBaseRate(newBaseRateValue: BigDecimal) {
+    baseRateValue = newBaseRateValue.setScale(
+        Rate.BASE_RATE_DECIMAL_PLACES,
+        BigDecimal.ROUND_HALF_UP
+    )
+  }
+
+  fun baseRateChanged(rates: List<Rate>): Boolean =
       rates.isNotEmpty() && rates[0].symbol != baseRateSymbol
 
-  private fun convertForNewBaseRate(rates: List<Rate>) {
-    baseRateSymbol = rates[0].symbol
-    baseRateValue = getBaseRatePreviousValue()
-    rates[0].value = baseRateValue
-    rates.subList(1, rates.size).map { it.multiply(baseRateValue) }
+  private fun convertForNewBaseRate(rates: List<Rate>): List<Rate> {
+    val result = copyRates(rates)
 
-    refreshRatesListener.refreshAllRates()
+    baseRateSymbol = result[0].symbol
+    baseRateValue = getBaseRatePreviousValue()
+    result[0].value = baseRateValue
+    result.subList(1, result.size).map { it.multiply(baseRateValue) }
+
+    return result.toList()
   }
 
-  private fun convertForPreviousBaseRate(rates: List<Rate>) {
-    rates.first().value = baseRateValue
-    rates.subList(1, rates.size).map { it.multiply(baseRateValue) }
+  private fun convertForPreviousBaseRate(rates: List<Rate>): List<Rate> {
+    val result = copyRates(rates)
 
-    refreshRatesListener.refreshExchangeRates()
+    result.first().value = baseRateValue
+    result.subList(1, result.size).map { it.multiply(baseRateValue) }
+
+    return result
+  }
+
+  private fun copyRates(rates: List<Rate>): List<Rate> {
+    val copy = mutableListOf<Rate>()
+    rates.forEach { copy.add(Rate(it.symbol, it.value)) }
+    return copy.toList()
   }
 
   private fun getBaseRatePreviousValue() = previousRates.firstOrNull {
