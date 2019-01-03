@@ -1,8 +1,8 @@
 package com.bobowiec.revolut_app.util.convert
 
-import com.bobowiec.revolut_app.TestDataProvider
-import com.bobowiec.revolut_app.extensions.multiply
-import org.junit.Assert.assertEquals
+import com.bobowiec.revolut_app.provider.RatesDataProvider
+import com.bobowiec.revolut_app.data.model.Rate
+import org.junit.Assert.*
 import org.junit.Test
 
 class RatesConverterTest {
@@ -10,9 +10,9 @@ class RatesConverterTest {
   private lateinit var SUT: RatesConverter
 
   @Test
-  fun `Should convert rates using default base rate for first time`() {
+  fun `Should not convert rates if base rate not changed and has default value`() {
     // given
-    val rates = TestDataProvider.getRandomRates()
+    val rates = RatesDataProvider.getRandomRates()
     val baseRate = rates[0]
 
     // when
@@ -20,12 +20,41 @@ class RatesConverterTest {
     val result = SUT.convert(rates)
 
     // then
-    assertEquals(baseRate, result.first())
-    rates.forEachIndexed { index, item ->
-      val expected = rates[index]
-      if (index != 0) expected.multiply(baseRate.value)
-      assertEquals(expected, item)
-    }
+    assertEquals(rates, result)
+  }
+
+  @Test
+  fun `Should convert rates for same base rate with new value`() {
+    // given
+    val rates = RatesDataProvider.getRandomRates()
+    val rateValue = RatesDataProvider.getRateValue(1.45)
+    val baseRate = Rate(rates[0].symbol, rateValue)
+
+    // when
+    SUT = RatesConverter(baseRate = baseRate)
+    val result = SUT.convert(rates)
+
+    // then
+    val expectedRates = RatesDataProvider.getConvertedRates(baseRate, rates)
+    assertEquals(expectedRates, result)
+  }
+
+  @Test
+  fun `Should convert rates for new base rate`() {
+    // given
+    val previousRates = RatesDataProvider.getRandomRates()
+    val rates = RatesDataProvider.getRandomRates()
+    val newBaseRate = rates[0]
+
+    // when
+    SUT = RatesConverter(baseRate = previousRates[0], previousRates = previousRates)
+    val result = SUT.convert(rates)
+
+    // then
+    val expectedRates = RatesDataProvider.getConvertedRates(newBaseRate, rates)
+    assertTrue(expectedRates.size == result.size &&
+        expectedRates.containsAll(result) &&
+        result.containsAll(expectedRates))
   }
 
 }

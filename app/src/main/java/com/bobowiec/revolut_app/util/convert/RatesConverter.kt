@@ -13,7 +13,7 @@ class RatesConverter(
     val result = if (baseRateChanged(rates)) {
       convertForNewBaseRate(rates)
     } else {
-      convertForPreviousBaseRate(rates)
+      convertForSameBaseRate(rates)
     }
     previousRates = result
 
@@ -41,14 +41,17 @@ class RatesConverter(
     return result.toList()
   }
 
-  private fun convertForPreviousBaseRate(rates: List<Rate>): List<Rate> {
-    val result = copyRates(rates)
+  private fun convertForSameBaseRate(rates: List<Rate>): List<Rate> {
+    if (baseRateHasDefaultValue()) return rates
 
+    val result = copyRates(rates)
     result.first().value = baseRate.value
     result.subList(1, result.size).map { it.multiply(baseRate.value) }
 
     return result.toList()
   }
+
+  private fun baseRateHasDefaultValue() = baseRate.value == Rate.BASE_RATE_DEFAULT_VALUE
 
   private fun copyRates(rates: List<Rate>): List<Rate> {
     val copy = mutableListOf<Rate>()
