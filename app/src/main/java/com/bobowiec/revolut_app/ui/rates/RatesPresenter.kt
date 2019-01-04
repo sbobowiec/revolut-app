@@ -1,7 +1,6 @@
 package com.bobowiec.revolut_app.ui.rates
 
 import com.bobowiec.revolut_app.data.model.Rate
-import com.bobowiec.revolut_app.data.remote.RatesApiConfig
 import com.bobowiec.revolut_app.data.local.RatesRepository
 import com.bobowiec.revolut_app.extensions.addTo
 import com.bobowiec.revolut_app.extensions.isBaseRate
@@ -55,7 +54,7 @@ class RatesPresenter @Inject constructor(
         .observeOn(schedulerProvider.uiScheduler())
         .subscribe { isConnectedToInternet ->
           if (isConnectedToInternet) {
-            RatesApiConfig.BASE_PARAM_VALUE = rate.symbol
+            updateBaseParamValueInteractor.execute(rate.symbol)
             view?.scrollToTop()
           } else {
             view?.showOfflineSnackBar()
