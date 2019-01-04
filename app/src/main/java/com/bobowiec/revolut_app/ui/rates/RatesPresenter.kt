@@ -5,6 +5,7 @@ import com.bobowiec.revolut_app.data.remote.RatesApiConfig
 import com.bobowiec.revolut_app.data.local.RatesRepository
 import com.bobowiec.revolut_app.extensions.addTo
 import com.bobowiec.revolut_app.extensions.isBaseRate
+import com.bobowiec.revolut_app.interactor.UpdateBaseParamValueInteractor
 import com.bobowiec.revolut_app.service.RatesService
 import com.bobowiec.revolut_app.util.scheduler.SchedulerProvider
 import com.bobowiec.revolut_app.util.network.NetworkStateObserver
@@ -15,17 +16,13 @@ class RatesPresenter @Inject constructor(
     private val ratesRepository: RatesRepository,
     private val ratesService: RatesService,
     private val schedulerProvider: SchedulerProvider,
-    private val networkStateObserver: NetworkStateObserver
+    private val networkStateObserver: NetworkStateObserver,
+    private val updateBaseParamValueInteractor: UpdateBaseParamValueInteractor
 ) {
 
   private var view: RatesView? = null
   private var disposables: CompositeDisposable = CompositeDisposable()
   private var fetchedRates: List<Rate> = listOf()
-
-  init {
-    RatesApiConfig.BASE_PARAM_VALUE = ratesRepository.findAll()
-        .takeIf { it.isNotEmpty() }?.first()?.symbol ?: RatesApiConfig.DEFAULT_BASE
-  }
 
   fun bindView(view: RatesView) {
     this.view = view
@@ -36,6 +33,7 @@ class RatesPresenter @Inject constructor(
   }
 
   fun init() {
+    updateBaseParamValueInteractor.execute()
     loadLocalDataIfAvailable()
   }
 

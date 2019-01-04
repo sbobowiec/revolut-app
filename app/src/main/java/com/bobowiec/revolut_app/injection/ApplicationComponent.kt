@@ -1,9 +1,6 @@
 package com.bobowiec.revolut_app.injection
 
-import com.bobowiec.revolut_app.injection.module.ApplicationModule
-import com.bobowiec.revolut_app.injection.module.DataModule
-import com.bobowiec.revolut_app.injection.module.NetworkModule
-import com.bobowiec.revolut_app.injection.module.ServiceModule
+import com.bobowiec.revolut_app.injection.module.*
 import com.bobowiec.revolut_app.ui.rates.RatesFragment
 import dagger.Component
 import javax.inject.Singleton
@@ -13,7 +10,8 @@ import javax.inject.Singleton
   ApplicationModule::class,
   DataModule::class,
   NetworkModule::class,
-  ServiceModule::class
+  ServiceModule::class,
+  InteractorModule::class
 ])
 interface ApplicationComponent {
 

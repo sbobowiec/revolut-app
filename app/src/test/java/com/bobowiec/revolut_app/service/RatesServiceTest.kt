@@ -32,7 +32,7 @@ class RatesServiceTest {
   private lateinit var SUT: RatesService
 
   @Before
-  fun setup() {
+  fun setUp() {
     MockitoAnnotations.initMocks(this)
     testSchedulerProvider = TestSchedulerProvider()
     ratesSubject = PublishSubject.create()
