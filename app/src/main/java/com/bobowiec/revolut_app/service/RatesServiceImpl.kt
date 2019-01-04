@@ -18,6 +18,7 @@ class RatesServiceImpl(
     private val ratesRepository: RatesRepository,
     private val schedulerProvider: SchedulerProvider,
     private val ratesSubject: PublishSubject<List<Rate>> = PublishSubject.create(),
+    private val timer: Observable<Long> = Observable.interval(API_CALL_INTERVAL, TimeUnit.SECONDS),
     private var timerDisposable: Disposable? = null,
     private val requestDisposables: CompositeDisposable = CompositeDisposable()
 ) : RatesService {
@@ -36,10 +37,8 @@ class RatesServiceImpl(
   }
 
   private fun observeRatesChanges() {
-    timerDisposable = buildTimer().subscribe { handleRatesRequest() }
+    timerDisposable = timer.subscribe { handleRatesRequest() }
   }
-
-  private fun buildTimer() = Observable.interval(API_CALL_INTERVAL, TimeUnit.SECONDS)
 
   private fun cancelCurrentTimerIfRunning() {
     timerDisposable?.dispose()

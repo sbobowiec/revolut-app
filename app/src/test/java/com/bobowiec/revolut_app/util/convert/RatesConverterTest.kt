@@ -52,9 +52,7 @@ class RatesConverterTest {
 
     // then
     val expectedRates = RatesDataProvider.getConvertedRates(newBaseRate, rates)
-    assertTrue(expectedRates.size == result.size &&
-        expectedRates.containsAll(result) &&
-        result.containsAll(expectedRates))
+    assertEquals(expectedRates, result)
   }
 
 }

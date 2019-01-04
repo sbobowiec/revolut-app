@@ -1,6 +1,7 @@
 package com.bobowiec.revolut_app.provider
 
 import com.bobowiec.revolut_app.data.model.Currency
+import com.bobowiec.revolut_app.data.model.CurrentRates
 import com.bobowiec.revolut_app.data.model.Rate
 import com.bobowiec.revolut_app.extensions.multiply
 import java.math.BigDecimal
@@ -11,6 +12,15 @@ object RatesDataProvider {
   private val random = Random()
   private const val RANDOM_NUMBER_MIN_VALUE = 1
   private const val RANDOM_NUMBER_MAX_VALUE = 10
+
+  fun getRandomCurrentRates(): CurrentRates {
+    val randomRates = getRandomRates()
+    return CurrentRates(
+        randomRates[0].symbol,
+        "",
+        randomRates.subList(1, randomRates.size - 1).map { it.symbol to it.value }.toMap()
+    )
+  }
 
   fun getRandomRates(): List<Rate> {
     val randomRates = Currency.values().toList().map {
