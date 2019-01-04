@@ -37,11 +37,11 @@ class RatesPresenter @Inject constructor(
   }
 
   fun resume() {
-    startUpdatingRates()
+    startObservingRates()
   }
 
   fun stop() {
-    ratesRepository.save(fetchedRates)
+    updateLocalData()
     unbindRatesService()
     disposables.clear()
   }
@@ -68,7 +68,11 @@ class RatesPresenter @Inject constructor(
         ?.let { handleData(it) }
   }
 
-  private fun startUpdatingRates() {
+  private fun updateLocalData() {
+    ratesRepository.save(fetchedRates)
+  }
+
+  private fun startObservingRates() {
     networkStateObserver.observeNetworkState()
         .subscribeOn(schedulerProvider.ioScheduler())
         .observeOn(schedulerProvider.uiScheduler())
