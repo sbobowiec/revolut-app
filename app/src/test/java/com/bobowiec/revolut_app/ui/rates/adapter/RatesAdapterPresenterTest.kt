@@ -34,6 +34,7 @@ class RatesAdapterPresenterTest {
     // given
     val ratesList = RatesDataProvider.getRandomRates()
     given(ratesConverter.baseRateChanged(ratesList)).willReturn(true)
+    given(ratesConverter.convert(ratesList)).willReturn(ratesList)
 
     // when
     SUT.handleRatesRefresh(ratesList)
@@ -41,6 +42,34 @@ class RatesAdapterPresenterTest {
     // then
     then(view).should().setRates(ratesList)
     then(view).should().refreshAllRates()
+  }
+
+  @Test
+  fun `Should refresh only exchange rates if base rate is still the same`() {
+    // given
+    val ratesList = RatesDataProvider.getRandomRates()
+    given(ratesConverter.baseRateChanged(ratesList)).willReturn(false)
+    given(ratesConverter.convert(ratesList)).willReturn(ratesList)
+
+    // when
+    SUT.handleRatesRefresh(ratesList)
+
+    // then
+    then(view).should().setRates(ratesList)
+    then(view).should().refreshExchangeRates()
+  }
+
+  @Test
+  fun `Should handle rate input changed action`() {
+    // given
+    val rateInput = "4.35"
+    val rateValue = rateInput.toBigDecimal()
+
+    // when
+    SUT.onRateInputValueChanged(rateInput)
+
+    // then
+    then(ratesConverter).should().updateBaseRateValue(rateValue)
   }
 
 }

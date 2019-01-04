@@ -6,7 +6,6 @@ buildscript {
     ext.dagger_version = '2.20'
     ext.support_version = '27.1.1'
     ext.mockito_version = '2.23.4'
-    ext.hamcrest_version = '2.1'
 
     repositories {
         google()

@@ -2,8 +2,9 @@ package com.bobowiec.revolut_app.ui.rates.adapter
 
 import com.bobowiec.revolut_app.data.model.Rate
 import com.bobowiec.revolut_app.util.convert.RatesConverter
+import com.bobowiec.revolut_app.util.convert.RatesConverterImpl
 
-class RatesAdapterPresenter(private val ratesConverter: RatesConverter = RatesConverter()) {
+class RatesAdapterPresenter(private val ratesConverter: RatesConverter = RatesConverterImpl()) {
 
   private var view: RatesAdapterView? = null
 

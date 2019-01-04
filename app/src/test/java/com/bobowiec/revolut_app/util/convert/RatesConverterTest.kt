@@ -16,7 +16,7 @@ class RatesConverterTest {
     val baseRate = rates[0]
 
     // when
-    SUT = RatesConverter(baseRate = baseRate)
+    SUT = RatesConverterImpl(baseRate = baseRate)
     val result = SUT.convert(rates)
 
     // then
@@ -31,7 +31,7 @@ class RatesConverterTest {
     val baseRate = Rate(rates[0].symbol, rateValue)
 
     // when
-    SUT = RatesConverter(baseRate = baseRate)
+    SUT = RatesConverterImpl(baseRate = baseRate)
     val result = SUT.convert(rates)
 
     // then
@@ -47,7 +47,7 @@ class RatesConverterTest {
     val newBaseRate = rates[0]
 
     // when
-    SUT = RatesConverter(baseRate = previousRates[0], previousRates = previousRates)
+    SUT = RatesConverterImpl(baseRate = previousRates[0], previousRates = previousRates)
     val result = SUT.convert(rates)
 
     // then
